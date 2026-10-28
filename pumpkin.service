@@ -1,0 +1,21 @@
+[Unit]
+Description=Halloween cyclops pumpkin
+After=multi-user.target sound.target hobot-audio.service
+
+[Service]
+User=sunrise
+Group=sunrise
+SupplementaryGroups=gpio video audio
+WorkingDirectory=/home/sunrise/Desktop/pumpkin
+Environment=XDG_RUNTIME_DIR=/run/user/1000 PYTHONUNBUFFERED=1
+# give the desktop autologin up to 60 s to bring up PulseAudio so sounds go through it;
+# if it never appears, sounds.py falls back to ALSA directly
+ExecStartPre=/bin/sh -c 'for i in $(seq 60); do pactl info >/dev/null 2>&1 && exit 0; sleep 1; done; exit 0'
+ExecStart=/usr/bin/python3 /home/sunrise/Desktop/pumpkin/src/pumpkin.py
+Restart=always
+RestartSec=5
+TimeoutStartSec=90
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target

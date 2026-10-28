@@ -1,0 +1,5 @@
+iseeyou.wav - "i see you" sound effect from Quick Sounds, https://quicksounds.com
+              (Standard License: attribution required, do not redistribute)
+laugh.wav   - "Ghost Laughing - Sound Effect" by ProSounds, https://www.youtube.com/watch?v=ujSx5LyEYBU
+              (no license stated; personal use only, do not redistribute)
+growl.wav, ambience.wav - synthesized in code for this project.

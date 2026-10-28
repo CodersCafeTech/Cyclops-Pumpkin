@@ -1,0 +1,6 @@
+# pre-rendered eye frames, re-rendered automatically when pumpkin_eye.py changes
+.eye_cache_*.npy
+__pycache__/
+# credited sound effects, not redistributable (see sounds/CREDITS.txt); download them yourself
+sounds/iseeyou.wav
+sounds/laugh.wav

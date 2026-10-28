@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1610 1010" width="1610" height="1010" font-family="Liberation Sans, Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="a-usb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2F6FDB"/></marker>
+    <marker id="a-spi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#E8731A"/></marker>
+    <marker id="a-gpio" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2E9E5B"/></marker>
+    <marker id="a-audio" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8A4FD8"/></marker>
+    <marker id="a-ipc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5F574F"/></marker>
+    <marker id="a-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A89B8C"/></marker>
+    <filter id="sh" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#5a3a1a" flood-opacity="0.10"/></filter>
+    <style>
+      .t  { fill:#1F1B16; }
+      .m  { fill:#6B6259; }
+      .h1 { font-size:30px; font-weight:700; }
+      .h2 { font-size:19px; font-weight:700; }
+      .h3 { font-size:15px; font-weight:700; }
+      .b  { font-size:13.5px; }
+      .s  { font-size:12px; }
+      .mono { font-family:"Noto Sans Mono","DejaVu Sans Mono",monospace; font-size:12px; }
+      .card { fill:#FFFFFF; stroke:#E2D8CC; stroke-width:1.5; }
+      .step { fill:#FAF6F1; stroke:#E6DDD2; stroke-width:1.2; }
+      .dev  { fill:#FFFFFF; stroke:#D9CFC2; stroke-width:1.5; }
+      .flow { stroke:#A89B8C; stroke-width:1.6; fill:none; }
+    </style>
+  </defs>
+
+  <rect width="1610" height="1010" fill="#FFFDF9"/>
+
+  <!-- title -->
+  <text x="40" y="58" class="t h1">Cyclops Pumpkin Robot · System Architecture</text>
+  <text x="40" y="88" class="m b" font-size="15">Camera, BPU detection, the moving eye, sound, lights and relay, all running on one RDK X5 with nothing sent off the board</text>
+
+  <!-- RDK X5 container -->
+  <rect x="330" y="118" width="920" height="812" rx="18" fill="#F6F1EA" stroke="#D9CFC2" stroke-width="1.5"/>
+  <text x="356" y="152" class="t h2">D-Robotics RDK X5</text>
+  <text x="540" y="152" class="m b">Ubuntu 22.04 · 8× Cortex-A55 · 10 TOPS BPU · three Python processes (spawn)</text>
+
+  <!-- ============ Watcher process ============ -->
+  <rect x="360" y="180" width="380" height="440" rx="14" class="card" filter="url(#sh)"/>
+  <text x="382" y="212" class="t h3">Watcher process</text>
+  <text x="552" y="212" class="m mono">PersonWatcher</text>
+
+  <rect x="380" y="232" width="340" height="56" rx="9" class="step"/>
+  <text x="396" y="256" class="t b" font-weight="700">Capture</text>
+  <text x="396" y="276" class="m s">OpenCV V4L2 · 640×480 MJPG · auto-picks /dev/video*</text>
+
+  <path d="M550,288 V306" class="flow" marker-end="url(#a-flow)"/>
+  <rect x="380" y="308" width="340" height="56" rx="9" class="step"/>
+  <text x="396" y="332" class="t b" font-weight="700">Letterbox + NV12</text>
+  <text x="396" y="352" class="m s">resize into 960×544, keep aspect, BGR → NV12</text>
+
+  <path d="M550,364 V382" class="flow" marker-end="url(#a-flow)"/>
+  <rect x="380" y="384" width="340" height="72" rx="9" fill="#FFF1E5" stroke="#E8731A" stroke-width="1.8"/>
+  <rect x="660" y="394" width="48" height="22" rx="5" fill="#E8731A"/>
+  <text x="684" y="410" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">BPU</text>
+  <text x="396" y="408" class="t b" font-weight="700">Multitask detection · ~13 ms</text>
+  <text x="396" y="428" class="m s">TROS body / head / face / hand model (.hbm)</text>
+  <text x="396" y="446" class="m s">via hobot_dnn · one pass per frame</text>
+
+  <path d="M550,456 V474" class="flow" marker-end="url(#a-flow)"/>
+  <rect x="380" y="476" width="340" height="56" rx="9" class="step"/>
+  <text x="396" y="500" class="t b" font-weight="700">Thresholds</text>
+  <text x="396" y="520" class="m s">score ≥ 0.7 · close face ≥ 80 px · 2 frames in a row</text>
+
+  <path d="M550,532 V550" class="flow" marker-end="url(#a-flow)"/>
+  <rect x="380" y="552" width="340" height="50" rx="9" fill="#F1EEEA" stroke="#CFC6BB" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <text x="396" y="573" class="t s" font-weight="700">Shared timestamps (mp.Value)</text>
+  <text x="396" y="591" class="m mono">person_seen · near_seen</text>
+
+  <!-- ============ Main process ============ -->
+  <rect x="780" y="180" width="440" height="450" rx="14" class="card" filter="url(#sh)"/>
+  <text x="802" y="212" class="t h3">Main process</text>
+  <text x="920" y="212" class="m mono">pumpkin.py</text>
+
+  <!-- state machine pills -->
+  <g font-size="12.5" font-weight="700" text-anchor="middle">
+    <rect x="800" y="262" width="86" height="36" rx="18" fill="#EAF2FF" stroke="#2F6FDB" stroke-width="1.4"/>
+    <text x="843" y="285" fill="#1F4FA8">normal ↺</text>
+    <rect x="904" y="262" width="96" height="36" rx="18" fill="#FFF1E5" stroke="#E8731A" stroke-width="1.4"/>
+    <text x="952" y="285" fill="#A24D0C">transform</text>
+    <rect x="1018" y="262" width="84" height="36" rx="18" fill="#FCE8E6" stroke="#C8382B" stroke-width="1.4"/>
+    <text x="1060" y="285" fill="#9B2318">scary ↺</text>
+    <rect x="1120" y="262" width="80" height="36" rx="18" fill="#EEF7F1" stroke="#2E9E5B" stroke-width="1.4"/>
+    <text x="1160" y="285" fill="#1E7042">revert</text>
+  </g>
+  <path d="M886,280 H902" class="flow" marker-end="url(#a-flow)"/>
+  <path d="M1000,280 H1016" class="flow" marker-end="url(#a-flow)"/>
+  <path d="M1102,280 H1118" class="flow" marker-end="url(#a-flow)"/>
+  <path d="M1160,262 V246 H843 V260" class="flow" stroke-dasharray="4 4" marker-end="url(#a-flow)"/>
+  <text x="1001" y="241" class="m s" text-anchor="middle">moving-eye state machine</text>
+
+  <text x="800" y="324" class="t s" font-weight="700">Moving eye · FrameClock 20 fps</text>
+  <text x="800" y="343" class="m s">402 procedural RGB565 frames, cached; drops frames if SPI lags</text>
+
+  <rect x="800" y="358" width="400" height="84" rx="9" class="step"/>
+  <text x="814" y="380" class="t s"><tspan font-weight="700">person far, no close face</tspan> → whisper "I see you..." (≥ 20 s apart)</text>
+  <text x="814" y="403" class="t s"><tspan font-weight="700">face up close</tspan> → laugh + LEDs + relay ON + transform</text>
+  <text x="814" y="426" class="t s"><tspan font-weight="700">4 s without a close face</tspan> → revert, growl stops, relay OFF</text>
+
+  <rect x="800" y="452" width="400" height="40" rx="9" class="step"/>
+  <text x="814" y="477" class="t s"><tspan font-weight="700">SoundPlayer ×2</tspan> · paplay (ALSA fallback) · voice + growl</text>
+
+  <rect x="800" y="510" width="400" height="40" rx="9" class="step"/>
+  <text x="814" y="535" class="t s"><tspan font-weight="700">Relay</tspan> · sysfs GPIO 420 · active-low</text>
+
+  <rect x="800" y="570" width="400" height="40" rx="9" class="step"/>
+  <text x="814" y="595" class="t s"><tspan font-weight="700">LED trigger</tspan> · laugh start time + 0.15 s speaker offset</text>
+
+
+  <!-- watcher -> main (IPC) -->
+  <path d="M720,577 H758 V400 H798" stroke="#5F574F" stroke-width="2" fill="none" marker-end="url(#a-ipc)"/>
+
+  <!-- main -> LED (IPC) -->
+  <path d="M1000,630 V718" stroke="#5F574F" stroke-width="2" fill="none" marker-end="url(#a-ipc)"/>
+
+  <!-- ============ LED process ============ -->
+  <rect x="780" y="720" width="440" height="186" rx="14" class="card" filter="url(#sh)"/>
+  <text x="802" y="752" class="t h3">LED process</text>
+  <text x="910" y="752" class="m mono">LedProcess · ws2812.py</text>
+  <rect x="800" y="770" width="126" height="116" rx="9" class="step"/>
+  <text x="812" y="794" class="t s" font-weight="700">Loudness</text>
+  <text x="812" y="813" class="m s">envelope of</text>
+  <text x="812" y="830" class="m s">laugh.wav,</text>
+  <text x="812" y="847" class="m s">50 values/s,</text>
+  <text x="812" y="864" class="m s">fast attack</text>
+  <path d="M926,828 H940" class="flow" marker-end="url(#a-flow)"/>
+  <rect x="942" y="770" width="126" height="116" rx="9" class="step"/>
+  <text x="954" y="794" class="t s" font-weight="700">LaughLights</text>
+  <text x="954" y="813" class="m s">yellow brightness,</text>
+  <text x="954" y="830" class="m s">spreads from</text>
+  <text x="954" y="847" class="m s">the centre,</text>
+  <text x="954" y="864" class="m s">candle flicker</text>
+  <path d="M1068,828 H1082" class="flow" marker-end="url(#a-flow)"/>
+  <rect x="1084" y="770" width="116" height="116" rx="9" class="step"/>
+  <text x="1096" y="794" class="t s" font-weight="700">SPI encoder</text>
+  <text x="1096" y="813" class="m s">4 MHz,</text>
+  <text x="1096" y="830" class="m s">5 SPI bits per</text>
+  <text x="1096" y="847" class="m s">LED bit, 320 µs</text>
+  <text x="1096" y="864" class="m s">latch gap</text>
+
+  <!-- ============ On-board files ============ -->
+  <rect x="360" y="720" width="380" height="186" rx="14" fill="#FFFFFF" stroke="#D9CFC2" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="382" y="752" class="t h3">On-board files</text>
+  <text x="382" y="782" class="t mono">sounds/</text>
+  <text x="470" y="782" class="m s">iseeyou · laugh · growl · ambience</text>
+  <text x="382" y="810" class="t mono">.eye_cache_*.npy</text>
+  <text x="530" y="810" class="m s">eye frames, rendered once</text>
+  <text x="382" y="838" class="t mono">*.hbm</text>
+  <text x="470" y="838" class="m s">TROS multitask model</text>
+  <text x="382" y="866" class="t mono">pumpkin.service</text>
+  <text x="530" y="866" class="m s">optional start on boot</text>
+  <path d="M740,828 H778" class="flow" stroke-dasharray="4 4" marker-end="url(#a-flow)"/>
+
+  <!-- ============ Inputs (left) ============ -->
+  <text x="40" y="208" class="m s" font-weight="700" letter-spacing="1.5">INPUTS</text>
+  <rect x="40" y="226" width="250" height="108" rx="12" class="dev" filter="url(#sh)"/>
+  <text x="60" y="258" class="t h3">USB webcam</text>
+  <text x="60" y="280" class="m s">640×480 MJPG, 25 fps</text>
+  <text x="60" y="300" class="m s">watches the doorway</text>
+  <rect x="60" y="310" width="78" height="18" rx="4" fill="#EAF2FF"/>
+  <text x="99" y="323" fill="#1F4FA8" font-size="11" font-weight="700" text-anchor="middle">USB 3.0</text>
+  <path d="M290,260 H378" stroke="#2F6FDB" stroke-width="2.4" fill="none" marker-end="url(#a-usb)"/>
+
+
+  <!-- ============ Outputs (right) ============ -->
+  <text x="1300" y="208" class="m s" font-weight="700" letter-spacing="1.5">OUTPUTS</text>
+
+  <!-- display -->
+  <rect x="1300" y="226" width="270" height="116" rx="12" class="dev" filter="url(#sh)"/>
+  <circle cx="1338" cy="268" r="22" fill="#FFF1E5" stroke="#E8731A" stroke-width="2"/>
+  <circle cx="1338" cy="268" r="11" fill="#E8B13A"/>
+  <ellipse cx="1338" cy="268" rx="3" ry="9" fill="#2A1508"/>
+  <text x="1372" y="262" class="t h3">Round display</text>
+  <text x="1372" y="282" class="m s">GC9A01 · the moving eye</text>
+  <text x="1320" y="314" class="m s">pins 18 / 29 / 31 · DC 22 · RST 13 · BL 15</text>
+  <rect x="1320" y="320" width="112" height="18" rx="4" fill="#FFF1E5"/>
+  <text x="1376" y="333" fill="#A24D0C" font-size="11" font-weight="700" text-anchor="middle">SPI2 · 16 MHz</text>
+  <path d="M1220,280 H1298" stroke="#E8731A" stroke-width="2.4" fill="none" marker-end="url(#a-spi)"/>
+
+  <!-- speaker -->
+  <rect x="1300" y="420" width="270" height="104" rx="12" class="dev" filter="url(#sh)"/>
+  <text x="1320" y="452" class="t h3">Speaker</text>
+  <text x="1320" y="474" class="m s">"I see you...", ghost laugh, growl</text>
+  <rect x="1320" y="488" width="104" height="18" rx="4" fill="#F3ECFC"/>
+  <text x="1372" y="501" fill="#6431AE" font-size="11" font-weight="700" text-anchor="middle">3.5 mm jack</text>
+  <path d="M1200,472 H1298" stroke="#8A4FD8" stroke-width="2.4" fill="none" marker-end="url(#a-audio)"/>
+
+  <!-- relay + humidifier -->
+  <rect x="1300" y="548" width="270" height="88" rx="12" class="dev" filter="url(#sh)"/>
+  <text x="1320" y="578" class="t h3">Relay module</text>
+  <text x="1320" y="598" class="m s">active-low, switches the humidifier</text>
+  <rect x="1320" y="608" width="96" height="18" rx="4" fill="#EAF6EF"/>
+  <text x="1368" y="621" fill="#1E7042" font-size="11" font-weight="700" text-anchor="middle">GPIO pin 7</text>
+  <path d="M1200,530 H1250 V592 H1298" stroke="#2E9E5B" stroke-width="2.4" fill="none" marker-end="url(#a-gpio)"/>
+  <path d="M1435,636 V662" stroke="#2E9E5B" stroke-width="2" fill="none" marker-end="url(#a-gpio)"/>
+  <rect x="1300" y="664" width="270" height="62" rx="12" fill="#F4F7FA" stroke="#C9D3DD" stroke-width="1.5"/>
+  <text x="1320" y="692" class="t h3">Humidifier</text>
+  <text x="1320" y="712" class="m s">mist drifts out of the pumpkin</text>
+
+  <!-- LEDs -->
+  <rect x="1300" y="770" width="270" height="116" rx="12" class="dev" filter="url(#sh)"/>
+  <text x="1320" y="800" class="t h3">WS2812B strip × 5</text>
+  <text x="1320" y="820" class="m s">yellow glow that follows the laugh</text>
+  <g>
+    <circle cx="1330" cy="842" r="7" fill="#FFE14D"/><circle cx="1352" cy="842" r="7" fill="#FFD400"/>
+    <circle cx="1374" cy="842" r="7" fill="#FFC400"/><circle cx="1396" cy="842" r="7" fill="#FFD400"/>
+    <circle cx="1418" cy="842" r="7" fill="#FFE14D"/>
+  </g>
+  <rect x="1320" y="858" width="168" height="18" rx="4" fill="#FFF1E5"/>
+  <text x="1404" y="871" fill="#A24D0C" font-size="11" font-weight="700" text-anchor="middle">SPI1 MOSI pin 19 · 4 MHz</text>
+  <path d="M1220,828 H1298" stroke="#E8731A" stroke-width="2.4" fill="none" marker-end="url(#a-spi)"/>
+
+  <!-- legend -->
+  <g font-size="12.5" class="m">
+    <text x="40" y="972" font-weight="700" letter-spacing="1.5" font-size="12">LINKS</text>
+    <line x1="100" y1="968" x2="134" y2="968" stroke="#2F6FDB" stroke-width="3"/><text x="142" y="972">USB</text>
+    <line x1="196" y1="968" x2="230" y2="968" stroke="#E8731A" stroke-width="3"/><text x="238" y="972">SPI</text>
+    <line x1="286" y1="968" x2="320" y2="968" stroke="#2E9E5B" stroke-width="3"/><text x="328" y="972">GPIO</text>
+    <line x1="384" y1="968" x2="418" y2="968" stroke="#8A4FD8" stroke-width="3"/><text x="426" y="972">Audio</text>
+    <line x1="486" y1="968" x2="520" y2="968" stroke="#5F574F" stroke-width="3"/><text x="528" y="972">Between processes</text>
+    <line x1="720" y1="968" x2="754" y2="968" stroke="#A89B8C" stroke-width="2" stroke-dasharray="4 4"/><text x="762" y="972">Data flow / files</text>
+  </g>
+  <text x="1570" y="972" class="m s" text-anchor="end">LED strip powered by its own 5 V supply · grounds joined</text>
+</svg>

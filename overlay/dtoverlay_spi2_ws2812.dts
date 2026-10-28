@@ -1,0 +1,14 @@
+/dts-v1/;
+/plugin/;
+
+/* Enable SPI2 (/dev/spidev2.0) on the RDK X5 40-pin header (now drives the GC9A01 display;
+ * the WS2812B strip moved to SPI1 MOSI pin 19):
+ * MOSI = pin 18, SCLK = pin 29, MISO = pin 37 (unused), CS = pin 31. */
+/ {
+  fragment@0 {
+    target-path = "/soc/a55_apb0/spi@34020000";
+    __overlay__ {
+      status = "okay";
+    };
+  };
+};
