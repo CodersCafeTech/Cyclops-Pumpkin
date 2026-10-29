@@ -13,7 +13,7 @@ The Cyclops Pumpkin Robot is a 3D-printed pumpkin with a single moving eye on a 
 ## Links
 
 - Repository: https://github.com/CodersCafeTech/Cyclops-Pumpkin
-- Demo video: *add link*
+- Demo video: https://youtube.com/shorts/P1_9KhJj4cU
 - Creator: CodersCafeTech
 - Creator profile: https://github.com/CodersCafeTech
 - Source license: [MIT](LICENSE)
@@ -38,7 +38,7 @@ Everything runs on the X5 itself, with no cloud and no servers. What follows is 
 
 The best way to meet the Cyclops is to watch its eye move as it notices someone.
 
-- Demo video: *add link*
+- Demo video: https://youtube.com/shorts/P1_9KhJj4cU
 - Source code: https://github.com/CodersCafeTech/Cyclops-Pumpkin
 
 ## Features
